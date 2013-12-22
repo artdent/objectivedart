@@ -1,0 +1,67 @@
+body {
+  font-family: sans-serif;
+  margin: 20px;
+}
+
+#prompt {
+  margin: 20px;
+  display: table;
+}
+
+#note-container {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+}
+
+#note {
+  color: #0a3;
+  width: 60px;
+  padding: 20px;
+  font-size: 32px;
+  border: 1px solid #ccc;
+}
+
+#strings .index {
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 10px;
+}
+
+#strings {
+  display: table-cell;
+}
+
+#strings > div {
+  margin: 30px;
+}
+
+#strings .highlander {
+  width: 400px;
+  height: 6px;
+  background-color: #ccc;
+  display: inline-block;
+  margin: 5px;
+}
+
+#strings .active {
+  background-color: #000;
+}
+
+#metronome {
+  display: inline-block;
+}
+
+#metronome div {
+  display: inline-block;
+  margin: 30px;
+  border-radius: 40px;
+  border: 1px solid black;
+  background-color: #ccc;
+  width: 40px;
+  height: 40px;
+}
+
+#metronome .active {
+  background-color: #000;
+}
