@@ -55,11 +55,13 @@ class Metronome {
    * The event stream. A broadcast stream that sends an
    * incrementing integer as its event.
    */
-  var stream;
+  Stream stream;
 
   Duration _delay;
 
-  Metronome(this._delay);
+  Metronome(Duration delay) {
+    this.delay = delay;
+  }
 
   set delay(Duration delay) {
     // TODO: changing the delay removes all listeners from the metronome.
@@ -73,7 +75,7 @@ class Metronome {
  * and updates the view accordingly.
  */
 class Controller {
-  View view;
+  final View view;
   final Metronome m;
 
   static const DELAY = const Duration(milliseconds: 1500);
@@ -88,11 +90,12 @@ class Controller {
 
   static final _RAND = new Random();
 
-  Controller()
-      : this.m = new Metronome(DELAY) {
-    // It would be nice if view were final, but it needs
-    // to be passed the metronome, which is non-static. Sigh.
-    view = new View(m);
+  factory Controller.go() {
+    var m = new Metronome(DELAY);
+    return new Controller(m, new View(m));
+  }
+
+  Controller(this.m, this.view) {
     m.stream.listen((beat) {
       if (beat % 4 == 0) {
         update();
@@ -118,7 +121,6 @@ class Controller {
   }
 }
 
-var controller;
 void main() {
-  controller = new Controller();
+  new Controller.go();
 }
