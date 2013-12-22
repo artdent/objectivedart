@@ -6,21 +6,15 @@ import 'dart:async' show Stream;
 import 'dart:html' show Element, querySelector;
 import 'dart:math' show Random;
 
-var controller;
-void main() {
-  controller = new Controller();
-}
-
 /**
  * Manages a set of elements, only one of which is active at once.
  */
 class Activator {
-  List<Element> _children;
+  final List<Element> _children;
   int activeIndex = null;
 
-  Activator(Element parent) {
-    _children = parent.getElementsByClassName('highlander');
-  }
+  Activator(Element parent)
+      : _children = parent.getElementsByClassName('highlander');
 
   void activate(int index) {
     if (activeIndex != null) {
@@ -32,25 +26,23 @@ class Activator {
 }
 
 class View {
-  Element _note = querySelector('#note');
-  Activator _strings = new Activator(querySelector('#strings'));
-  Activator _beats = new Activator(querySelector('#metronome'));
-  int activeString = null;
-  int activeBeat = null;
+  final Element _note = querySelector('#note');
+  final Activator _strings = new Activator(querySelector('#strings'));
+  final Activator _beats = new Activator(querySelector('#metronome'));
 
   View(Metronome m) {
     m.stream.listen((beat) => this.beat = beat % 4);
   }
 
-  set note (String note) {
+  set note(String note) {
     _note.text = note;
   }
 
-  set string (int string) {
+  set string(int string) {
     _strings.activate(string);
   }
 
-  set beat (int beat) {
+  set beat(int beat) {
     _beats.activate(beat);
   }
 }
@@ -65,11 +57,11 @@ class Metronome {
    */
   var stream;
 
-  Metronome(Duration delay) {
-    this.delay = delay;
-  }
+  Duration _delay;
 
-  set delay (Duration delay) {
+  Metronome(this._delay);
+
+  set delay(Duration delay) {
     // TODO: changing the delay removes all listeners from the metronome.
     stream = new Stream.periodic(delay, (beat) => beat)
         .asBroadcastStream();
@@ -82,22 +74,24 @@ class Metronome {
  */
 class Controller {
   View view;
-  Metronome m;
+  final Metronome m;
 
-  var delay = const Duration(milliseconds: 1500);
+  static const DELAY = const Duration(milliseconds: 1500);
 
-  var NOTES = [
+  static final NOTES = [
     'A', 'A♯', 'B', 'C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯'
   ];
 
-  var SUBSTITUTIONS = {
+  static final SUBSTITUTIONS = {
     'A#': 'B♭', 'C#': 'D♭', 'D♯': 'E♭', 'F♯': 'G♭', 'G♯': 'A♭'
   };
 
-  var _rand = new Random();
+  static final _RAND = new Random();
 
-  Controller() {
-    m = new Metronome(delay);
+  Controller()
+      : this.m = new Metronome(DELAY) {
+    // It would be nice if view were final, but it needs
+    // to be passed the metronome, which is non-static. Sigh.
     view = new View(m);
     m.stream.listen((beat) {
       if (beat % 4 == 0) {
@@ -107,19 +101,24 @@ class Controller {
   }
 
   String chooseNote() {
-    var note = NOTES[_rand.nextInt(NOTES.length)];
-    if (SUBSTITUTIONS.containsKey(note) && _rand.nextBool()) {
+    var note = NOTES[_RAND.nextInt(NOTES.length)];
+    if (SUBSTITUTIONS.containsKey(note) && _RAND.nextBool()) {
       note = SUBSTITUTIONS[note];
     }
     return note;
   }
 
   int chooseString() {
-    return _rand.nextInt(6);
+    return _RAND.nextInt(6);
   }
 
   void update() {
     view.note = chooseNote();
     view.string = chooseString();
   }
+}
+
+var controller;
+void main() {
+  controller = new Controller();
 }
