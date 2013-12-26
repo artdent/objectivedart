@@ -3,49 +3,9 @@
  */
 
 import 'dart:async' show StreamController, Timer;
-import 'dart:html' show Element, NumberInputElement, querySelector;
+import 'dart:html' show Element, NumberInputElement, querySelector, window;
 import 'dart:math' show Random;
-
-/**
- * Manages a set of elements, only one of which is active at once.
- */
-class Activator {
-  final List<Element> _children;
-  int activeIndex = null;
-
-  Activator(Element parent)
-      : _children = parent.getElementsByClassName('highlander');
-
-  void activate(int index) {
-    if (activeIndex != null) {
-      _children[activeIndex].classes.remove('active');
-    }
-    activeIndex = index;
-    _children[activeIndex].classes.add('active');
-  }
-}
-
-class View {
-  final Element _note = querySelector('#note');
-  final Activator _strings = new Activator(querySelector('#strings'));
-  final Activator _beats = new Activator(querySelector('#metronomedisplay'));
-
-  View(Metronome m) {
-    m.listen((beat) => this.beat = beat % 4);
-  }
-
-  set note(String note) {
-    _note.text = note;
-  }
-
-  set string(int string) {
-    _strings.activate(string);
-  }
-
-  set beat(int beat) {
-    _beats.activate(beat);
-  }
-}
+import 'dart:convert' show JSON;
 
 /**
  * A simple listenable timer.
@@ -78,13 +38,54 @@ class Metronome {
 }
 
 /**
- * Main class. Periodically chooses a string and a fret
+ * Manages a set of elements, only one of which is active at once.
+ */
+class Activator {
+  final List<Element> _children;
+  int activeIndex = null;
+
+  Activator(Element parent)
+      : _children = parent.getElementsByClassName('highlander');
+
+  void activate(int index) {
+    if (activeIndex != null) {
+      _children[activeIndex].classes.remove('active');
+    }
+    activeIndex = index;
+    _children[activeIndex].classes.add('active');
+  }
+}
+
+/// Updates the display.
+class View {
+  final Element _note = querySelector('#note');
+  final NumberInputElement tempoInput = querySelector("#tempo");
+  final Activator _strings = new Activator(querySelector('#strings'));
+  final Activator _beats = new Activator(querySelector('#metronomedisplay'));
+
+  set note(String note) {
+    _note.text = note;
+  }
+
+  set string(int string) {
+    _strings.activate(string);
+  }
+
+  set beat(int beat) {
+    _beats.activate(beat);
+  }
+}
+
+/**
+ * Main state. Chooses a string and a fret
  * and updates the view accordingly.
  */
-class Controller {
+class Model {
   final View view;
   final Metronome m;
-  final NumberInputElement tempo = querySelector("#tempo");
+
+  /// Tempo in beats per minute.
+  int _tempo = null;
 
   static final NOTES = [
     'A', 'A♯', 'B', 'C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯'
@@ -96,22 +97,16 @@ class Controller {
 
   static final _RAND = new Random();
 
-  factory Controller.go() {
-    var m = new Metronome();
-    return new Controller(m, new View(m));
-  }
-
-  Controller(this.m, this.view) {
+  Model(this.view, this.m) {
     m.listen((beat) {
+      view.beat = beat % 4;
       if (beat % 4 == 0) {
-        update();
+        chooseNextNote();
       }
     });
-    m.tempo = tempo.valueAsNumber;
-    tempo.onChange.listen((_) => m.tempo = tempo.valueAsNumber);
   }
 
-  String chooseNote() {
+  String _chooseNote() {
     var note = NOTES[_RAND.nextInt(NOTES.length)];
     if (SUBSTITUTIONS.containsKey(note) && _RAND.nextBool()) {
       note = SUBSTITUTIONS[note];
@@ -119,13 +114,66 @@ class Controller {
     return note;
   }
 
-  int chooseString() {
+  int _chooseString() {
     return _RAND.nextInt(6);
   }
 
-  void update() {
-    view.note = chooseNote();
-    view.string = chooseString();
+  void chooseNextNote() {
+    view.note = _chooseNote();
+    view.string = _chooseString();
+  }
+
+  set tempo(int tempo) {
+    _tempo = tempo;
+    m.tempo = tempo;
+  }
+
+  /// Serializes the user-editable state as json.
+  Object toJson() {
+    return {
+      'tempo': _tempo
+    };
+  }
+
+  /// Resets the user-editable state from a json object.
+  void fromJson(obj, {defaultTempo}) {
+    int t = obj['tempo'];
+    if (t == null) {
+      t = defaultTempo;
+    }
+    this.tempo = t;
+    view.tempoInput.value = t.toString();
+  }
+}
+
+class Controller {
+  final Model model;
+  final NumberInputElement tempoInput;
+
+  factory Controller.go() {
+    var m = new Metronome();
+    var view = new View();
+    var model = new Model(view, m);
+    return new Controller(model, view.tempoInput);
+  }
+
+  Controller(this.model, this.tempoInput) {
+    load();
+    tempoInput.onChange.listen((_) {
+      model.tempo = tempoInput.valueAsNumber.toInt();
+      save();
+    });
+  }
+
+  void load() {
+    var saved = window.localStorage['objectivedart'];
+    model.fromJson(saved != null ? JSON.decode(saved) : {},
+      defaultTempo: tempoInput.valueAsNumber.toInt()
+    );
+  }
+
+  void save() {
+    window.localStorage['objectivedart'] = JSON.encode(model.toJson());
   }
 }
 
