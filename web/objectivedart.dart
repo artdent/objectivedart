@@ -160,7 +160,7 @@ class Controller {
   Controller(this.model, this.tempoInput) {
     load();
     tempoInput.onChange.listen((_) {
-      model.tempo = tempoInput.valueAsNumber.toInt();
+      model.tempo = int.parse(tempoInput.value);
       save();
     });
   }
@@ -168,7 +168,7 @@ class Controller {
   void load() {
     var saved = window.localStorage['objectivedart'];
     model.fromJson(saved != null ? JSON.decode(saved) : {},
-      defaultTempo: tempoInput.valueAsNumber.toInt()
+      defaultTempo: int.parse(tempoInput.value)
     );
   }
 

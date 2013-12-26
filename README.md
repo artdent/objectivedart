@@ -19,3 +19,8 @@ TODO (might happen, especially if someone requests it):
 
 TODO (not going to happen unless someone sends a patch):
 - Use web audio API to listen for note onsets and pitches
+
+Bugs:
+- Tempo up/down toggles don't show up in Firefox
+  (<input type="number"> is not fully supported until FF28).
+- Untested in Internet Explorer.
