@@ -9,3 +9,13 @@ The name has threefold meaning: it sounds like "objet d'art"; the objective
 of using it is to learn the art of playing guitar; and the program
 is written in Dart. Any relation to other things beginning with
 "Objective" is pure trolling^Wcoincidence.
+
+Features:
+- Tempo adjustment
+- Tempo saved to local storage
+
+TODO (might happen, especially if someone requests it):
+- Only drill a subset of notes or strings
+
+TODO (not going to happen unless someone sends a patch):
+- Use web audio API to listen for note onsets and pitches
