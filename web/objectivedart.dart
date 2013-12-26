@@ -2,8 +2,8 @@
  * Objective D'Art fretboard trainer.
  */
 
-import 'dart:async' show Stream;
-import 'dart:html' show Element, querySelector;
+import 'dart:async' show StreamController, Timer;
+import 'dart:html' show Element, NumberInputElement, querySelector;
 import 'dart:math' show Random;
 
 /**
@@ -28,10 +28,10 @@ class Activator {
 class View {
   final Element _note = querySelector('#note');
   final Activator _strings = new Activator(querySelector('#strings'));
-  final Activator _beats = new Activator(querySelector('#metronome'));
+  final Activator _beats = new Activator(querySelector('#metronomedisplay'));
 
   View(Metronome m) {
-    m.stream.listen((beat) => this.beat = beat % 4);
+    m.listen((beat) => this.beat = beat % 4);
   }
 
   set note(String note) {
@@ -49,25 +49,32 @@ class View {
 
 /**
  * A simple listenable timer.
+ * Uses a broadcast stream underneath, but doesn't currently
+ * expose the full stream API.
  */
 class Metronome {
-  /**
-   * The event stream. A broadcast stream that sends an
-   * incrementing integer as its event.
-   */
-  Stream stream;
+  // This should maybe stop and start the metronome via
+  // onListen and onCancel, but currently there's always at least
+  // one listener (the beat display), so the broadcast stream
+  // is always active.
+  final StreamController _controller = new StreamController<int>.broadcast();
+  Timer _t;
+  int beat = 0;
 
-  Duration _delay;
-
-  Metronome(Duration delay) {
-    this.delay = delay;
+  void _tick() {
+    _controller.add(beat++);
   }
 
   set delay(Duration delay) {
-    // TODO: changing the delay removes all listeners from the metronome.
-    stream = new Stream.periodic(delay, (beat) => beat)
-        .asBroadcastStream();
+    if (_t != null) _t.cancel();
+    _t = new Timer.periodic(delay, (_) => _tick());
   }
+
+  set tempo(num tempo) {
+    delay = new Duration(milliseconds: 1000 * 60 ~/ tempo);
+  }
+
+  listen(onData) => _controller.stream.listen(onData);
 }
 
 /**
@@ -77,8 +84,7 @@ class Metronome {
 class Controller {
   final View view;
   final Metronome m;
-
-  static const DELAY = const Duration(milliseconds: 1500);
+  final NumberInputElement tempo = querySelector("#tempo");
 
   static final NOTES = [
     'A', 'A♯', 'B', 'C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯'
@@ -91,16 +97,18 @@ class Controller {
   static final _RAND = new Random();
 
   factory Controller.go() {
-    var m = new Metronome(DELAY);
+    var m = new Metronome();
     return new Controller(m, new View(m));
   }
 
   Controller(this.m, this.view) {
-    m.stream.listen((beat) {
+    m.listen((beat) {
       if (beat % 4 == 0) {
         update();
       }
     });
+    m.tempo = tempo.valueAsNumber;
+    tempo.onChange.listen((_) => m.tempo = tempo.valueAsNumber);
   }
 
   String chooseNote() {
