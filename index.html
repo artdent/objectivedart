@@ -23,16 +23,19 @@ A guitar fretboard trainer.
   </div>
 </div>
 
+<div id="metronomedisplay">
+  <div class="highlander"></div>
+  <div class="highlander"></div>
+  <div class="highlander"></div>
+  <div class="highlander"></div>
+</div>
+
 <!-- Public domain image from:
      http://commons.wikimedia.org/wiki/File:Metronome.svg
 -->
-<img src="metronome.svg" width="100px" height="100px">
-
-<div id="metronome">
-  <div class="highlander"></div>
-  <div class="highlander"></div>
-  <div class="highlander"></div>
-  <div class="highlander"></div>
+<div id="metronomecontrol">
+  <img src="metronome.svg" width="100px" height="100px">
+  ♩ = <input type="number" min="40" max="200" value="60" id="tempo">
 </div>
 
 <script src="objectivedart.dart.js"></script>
