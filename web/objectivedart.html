@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=600, user-scalable=yes">
   <title>Objective d'art</title>
   <link rel="stylesheet" href="objectivedart.css">
 </head>
@@ -23,19 +24,21 @@ A guitar fretboard trainer.
   </div>
 </div>
 
-<div id="metronomedisplay">
-  <div class="highlander"></div>
-  <div class="highlander"></div>
-  <div class="highlander"></div>
-  <div class="highlander"></div>
-</div>
+<div id="metronome">
+  <div id="metronomedisplay">
+    <div class="highlander"></div>
+    <div class="highlander"></div>
+    <div class="highlander"></div>
+    <div class="highlander"></div>
+  </div>
 
-<!-- Public domain image from:
-     http://commons.wikimedia.org/wiki/File:Metronome.svg
--->
-<div id="metronomecontrol">
-  <img src="metronome.svg" width="100px" height="100px">
-  ♩ = <input type="number" min="40" max="200" value="60" id="tempo">
+  <!-- Public domain image from:
+       http://commons.wikimedia.org/wiki/File:Metronome.svg
+  -->
+  <div id="metronomecontrol">
+    <img src="metronome.svg" width="100px" height="100px">
+    ♩ = <input type="number" min="40" max="200" value="60" id="tempo">
+  </div>
 </div>
 
 <script type="application/dart" src="objectivedart.dart"></script>

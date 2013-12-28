@@ -37,7 +37,7 @@ body {
 }
 
 #strings .highlander {
-  width: 400px;
+  width: 300px;
   height: 6px;
   background-color: #ccc;
   display: inline-block;
@@ -46,6 +46,12 @@ body {
 
 #strings .active {
   background-color: #000;
+}
+
+#metronome {
+  background-color: #eee;
+  width: 500px;
+  padding: 10px;
 }
 
 #metronomecontrol {
