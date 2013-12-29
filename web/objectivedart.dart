@@ -3,8 +3,7 @@
  */
 
 import 'dart:async' show StreamController, Timer;
-import 'dart:html' show Element, CheckboxInputElement, NumberInputElement,
-    querySelector, querySelectorAll, window;
+import 'dart:html' as h;
 import 'dart:math' show Random;
 import 'dart:convert' show JSON;
 
@@ -42,10 +41,10 @@ class Metronome {
  * Manages a set of elements, only one of which is active at once.
  */
 class Activator {
-  final List<Element> _children;
+  final List<h.Element> _children;
   int activeIndex = null;
 
-  Activator(Element parent)
+  Activator(h.Element parent)
       : _children = parent.getElementsByClassName('highlander');
 
   void activate(int index) {
@@ -71,20 +70,39 @@ String noteName(String noteId) {
   return note;
 }
 
+void addScript(src, {async: true}) {
+  var elem = new h.ScriptElement();
+  elem.src = src;
+  elem.async = async;
+  h.document.body.append(elem);
+}
+
+void addStylesheet(src) {
+  var elem = new h.LinkElement();
+  elem.rel = 'stylesheet';
+  elem.href = src;
+  h.document.body.append(elem);
+}
+
 /// Updates the display and holds references to relevant HTML elements.
 class View {
-  final Element _note = querySelector('#note');
-  final List<CheckboxInputElement> noteToggles =
-      querySelector('#choosenotes').querySelectorAll('input');
-  final NumberInputElement tempoInput = querySelector('#tempo');
-  final Activator _strings = new Activator(querySelector('#strings'));
-  final Activator _beats = new Activator(querySelector('#metronomedisplay'));
+  final h.Element _note = h.querySelector('#note');
+  final List<h.CheckboxInputElement> noteToggles =
+      h.querySelector('#choosenotes').querySelectorAll('input');
+  final h.NumberInputElement tempoInput = h.querySelector('#tempo');
+  final Activator _strings = new Activator(h.querySelector('#strings'));
+  final Activator _beats = new Activator(h.querySelector('#metronomedisplay'));
 
   View() {
-    // If <input type="number"> is not supported, at least fix
-    // the resulting layout bug.
-    // TODO: just use a polyfill here.
-    if (!NumberInputElement.supported) {
+    // Add a polyfill for <input type="number">, which is unsupported
+    // on some browsers, notably Firefox < 28.
+    if (!h.NumberInputElement.supported) {
+      // Load both synchronously, since the polyfill requires jQuery.
+      addScript(
+          '//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js',
+          async: false);
+      addScript('number-polyfill.min.js', async: false);
+      addStylesheet('number-polyfill.css');
       tempoInput.style.width = '100px';
     }
   }
@@ -241,7 +259,7 @@ class Controller {
 
   /// Loads user-modified state from local storage.
   void load() {
-    var saved = window.localStorage['objectivedart'];
+    var saved = h.window.localStorage['objectivedart'];
     model.fromJson(saved != null ? JSON.decode(saved) : {},
       defaultTempo: view.tempo
     );
@@ -249,7 +267,7 @@ class Controller {
 
   /// Saves user-modified state to local storage.
   void save() {
-    window.localStorage['objectivedart'] = JSON.encode(model.toJson());
+    h.window.localStorage['objectivedart'] = JSON.encode(model.toJson());
   }
 }
 
