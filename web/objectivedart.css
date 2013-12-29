@@ -3,6 +3,13 @@ body {
   margin: 20px;
 }
 
+#sourcelink {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 10px;
+}
+
 #prompt {
   margin: 20px;
   display: table;
