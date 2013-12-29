@@ -80,6 +80,15 @@ class View {
   final Activator _strings = new Activator(querySelector('#strings'));
   final Activator _beats = new Activator(querySelector('#metronomedisplay'));
 
+  View() {
+    // If <input type="number"> is not supported, at least fix
+    // the resulting layout bug.
+    // TODO: just use a polyfill here.
+    if (!NumberInputElement.supported) {
+      tempoInput.style.width = '100px';
+    }
+  }
+
   set note(String note) {
     if (note != null) {
       _note.text = note;
