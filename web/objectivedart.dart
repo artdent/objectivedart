@@ -92,7 +92,7 @@ class Model {
   ];
 
   static final SUBSTITUTIONS = {
-    'A#': 'B♭', 'C#': 'D♭', 'D♯': 'E♭', 'F♯': 'G♭', 'G♯': 'A♭'
+    'A♯': 'B♭', 'C♯': 'D♭', 'D♯': 'E♭', 'F♯': 'G♭', 'G♯': 'A♭'
   };
 
   static final _RAND = new Random();
