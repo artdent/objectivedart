@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=600, user-scalable=yes">
   <title>Objective d'art</title>
   <link rel="stylesheet" href="objectivedart.css">
 </head>
@@ -9,7 +10,9 @@
 <body>
 <h1>Objective d'art</h1>
 A guitar fretboard trainer.
-<a href="http://github.com/artdent/objectivedart">Source code</a>
+<div id="sourcelink">
+  <a href="http://github.com/artdent/objectivedart">Source code</a>
+</div>
 
 <div id="prompt">
   <div id="note-container"><div id="note">&nbsp;</div></div>
@@ -23,21 +26,66 @@ A guitar fretboard trainer.
   </div>
 </div>
 
-<div id="metronomedisplay">
-  <div class="highlander"></div>
-  <div class="highlander"></div>
-  <div class="highlander"></div>
-  <div class="highlander"></div>
+<div id="metronome">
+  <div id="metronomedisplay">
+    <div class="highlander"></div>
+    <div class="highlander"></div>
+    <div class="highlander"></div>
+    <div class="highlander"></div>
+  </div>
+
+  <!-- Public domain image from:
+       http://commons.wikimedia.org/wiki/File:Metronome.svg
+  -->
+  <div id="metronomecontrol">
+    <img src="metronome.svg" width="100px" height="100px">
+    ♩ = <input type="number" min="40" max="200" value="60" id="tempo">
+  </div>
 </div>
 
-<!-- Public domain image from:
-     http://commons.wikimedia.org/wiki/File:Metronome.svg
--->
-<div id="metronomecontrol">
-  <img src="metronome.svg" width="100px" height="100px">
-  ♩ = <input type="number" min="40" max="200" value="60" id="tempo">
+<div id="choosenotes">
+  <div class="note">
+    <label><input type="checkbox" checked id="choose_c"><br>C</label>
+  </div>
+  <div class="note">
+    <label><input type="checkbox" checked id="choose_cis"><br>C♯<br></label>
+    <label><input type="checkbox" id="choose_des"><br>D♭<br></label>
+  </div>
+  <div class="note">
+    <label><input type="checkbox" checked id="choose_d"><br>D</label>
+  </div>
+  <div class="note">
+    <label><input type="checkbox" id="choose_dis"><br>D♯<br></label>
+    <label><input type="checkbox" checked id="choose_ees"><br>E♭<br></label>
+  </div>
+  <div class="note">
+    <label><input type="checkbox" checked id="choose_e"><br>E</label>
+  </div>
+  <div class="note">
+    <label><input type="checkbox" checked id="choose_f"><br>F</label>
+  </div>
+  <div class="note">
+    <label><input type="checkbox" checked id="choose_fis"><br>F♯<br></label>
+    <label><input type="checkbox" id="choose_ges"><br>G♭<br></label>
+  </div>
+  <div class="note">
+    <label><input type="checkbox" checked id="choose_g"><br>G</label>
+  </div>
+  <div class="note">
+    <label><input type="checkbox" id="choose_gis"><br>G♯<br></label>
+    <label><input type="checkbox" checked id="choose_aes"><br>A♭<br></label>
+  </div>
+  <div class="note">
+    <label><input type="checkbox" checked id="choose_a"><br>A</label>
+  </div>
+  <div class="note">
+    <label><input type="checkbox" id="choose_aes"><br>A♯<br></label>
+    <label><input type="checkbox" checked id="choose_bis"><br>B♭<br></label>
+  </div>
+  <div class="note">
+    <label><input type="checkbox" checked id="choose_b"><br>B</label>
+  </div>
 </div>
-
 <script src="objectivedart.dart.js"></script>
 </body>
 </html>
