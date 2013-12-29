@@ -84,3 +84,26 @@ body {
 #metronomedisplay .active {
   background-color: #000;
 }
+
+#choosenotes {
+  margin: 30px;
+}
+
+#choosenotes .note {
+  display: inline-block;
+  border: 1px solid #999;
+  background-color: #eee;
+  line-height: 22px;
+  vertical-align: middle;
+  margin: 0;
+}
+
+#choosenotes label {
+  display: block;
+  padding: 2px 6px;
+}
+
+#choosenotes input {
+  margin: 0;
+  /*padding: initial*/
+}

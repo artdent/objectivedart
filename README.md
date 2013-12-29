@@ -12,10 +12,11 @@ is written in Dart. Any relation to other things beginning with
 
 Features:
 - Tempo adjustment
-- Tempo saved to local storage
+- Choose the subset of notes to learn
+- Tempo and note selection saved to local storage
 
 TODO (might happen, especially if someone requests it):
-- Only drill a subset of notes or strings
+- Choose the subset of strings to learn
 
 TODO (not going to happen unless someone sends a patch):
 - Use web audio API to listen for note onsets and pitches
