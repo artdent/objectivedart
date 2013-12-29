@@ -112,5 +112,10 @@ body {
 
 #choosenotes input {
   margin: 0;
-  /*padding: initial*/
+}
+
+/* Fix an alignment problem with the <input type="number"> polyfill. */
+#metronomecontrol div.number-spin-btn-container {
+  vertical-align: baseline;
+  top: 10px;
 }
